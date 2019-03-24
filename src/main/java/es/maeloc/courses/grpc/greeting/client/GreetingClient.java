@@ -1,9 +1,6 @@
 package es.maeloc.courses.grpc.greeting.client;
 
-import com.proto.greet.GreetRequest;
-import com.proto.greet.GreetResponse;
-import com.proto.greet.GreetServiceGrpc;
-import com.proto.greet.Greeting;
+import com.proto.greet.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -24,7 +21,7 @@ public class GreetingClient {
         // async dummy client
         // DummyServiceGrpc.DummyServiceFutureStub asyncClient = DummyServiceGrpc.newFutureStub(channel);
 
-        // create a greet service client (blocking - synchronous)
+
         GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(channel);
 
         // create a protocol buffer greeting message
@@ -32,6 +29,8 @@ public class GreetingClient {
                 .setFirstName("Pepe")
                 .setLastName("Solla")
                 .build();
+
+/*      // UNARY: create a greet service client (blocking - synchronous)
 
         // create a protocol buffer greet request
         GreetRequest greetRequest = GreetRequest.newBuilder()
@@ -42,6 +41,20 @@ public class GreetingClient {
         GreetResponse greetResponse = greetClient.greet(greetRequest);
 
         System.out.println(greetResponse.getResult());
+*/
+
+        // SERVER STREAMING:
+
+        // prepare the request
+        GreetManyTimesRequest greetManyTimesRequest = GreetManyTimesRequest.newBuilder()
+                .setGreeting(greeting)
+                .build();
+
+        // stream the response (in a blocking manner)
+        greetClient.greetManyTimes(greetManyTimesRequest)
+                .forEachRemaining(greetManyTimesResponse -> {
+                    System.out.println(greetManyTimesResponse.getResult());
+                });
 
         System.out.println("Shutting down channel");
         channel.shutdown();
