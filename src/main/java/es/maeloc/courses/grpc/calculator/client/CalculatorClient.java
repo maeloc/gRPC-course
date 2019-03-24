@@ -1,6 +1,7 @@
 package es.maeloc.courses.grpc.calculator.client;
 
 import com.proto.calculator.CalculatorServiceGrpc;
+import com.proto.calculator.PrimeNumberDecompositionRequest;
 import com.proto.calculator.SumRequest;
 import com.proto.calculator.SumResponse;
 import io.grpc.ManagedChannel;
@@ -16,6 +17,8 @@ public class CalculatorClient {
 
         CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(channel);
 
+/*
+        // Unary server
         SumRequest sumRequest = SumRequest.newBuilder()
                 .setFirstNumber(5)
                 .setSecondNumber(7)
@@ -26,6 +29,17 @@ public class CalculatorClient {
         System.out.println(sumRequest.getFirstNumber() + " + " +
                 sumRequest.getSecondNumber() + " = " +
                 sumResponse.getResult());
+*/
+
+        // Streaming server
+        Integer number = 1024;
+
+        stub.primeNumberDecomposition(PrimeNumberDecompositionRequest.newBuilder()
+                .setNumber(number)
+                .build())
+                .forEachRemaining(primeNumberDecompositionResponse -> {
+                    System.out.println(primeNumberDecompositionResponse.getPrimeFactor());
+                });
 
         channel.shutdown();
     }

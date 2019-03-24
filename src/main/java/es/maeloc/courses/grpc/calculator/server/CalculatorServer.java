@@ -7,6 +7,9 @@ import java.io.IOException;
 
 public class CalculatorServer {
     public static void main(String[] args) throws IOException, InterruptedException {
+
+        System.out.println("Calculator gRPC services started");
+
         Server server = ServerBuilder.forPort(50052)
                 .addService(new CalculatorServiceImpl())
                 .build();
