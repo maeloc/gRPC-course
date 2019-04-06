@@ -107,7 +107,6 @@ public class GreetingClient {
                 System.out.println("Server has completed sending us something");
                 latch.countDown();
                 // onCompleted() will be called right after onNext()
-
             }
         });
 
